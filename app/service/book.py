@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.models import Book
-from app.schema.book import BookCreate, BookUpdate
+from ..database.models import Book
+from ..schema.book import BookCreate, BookUpdate
 
 
 class DatabaseServices:

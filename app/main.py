@@ -1,24 +1,21 @@
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, status
 from contextlib import asynccontextmanager
-from sqlmodel import SQLModel
 
-from app.service.book import DatabaseServices
-
-from .database.session import create_table, sessioDb
+from .database.session import create_table
 from .database.models import Book
-from app.schema.book import  BookCreate, BookRead, BookUpdate
-from app.dependencies import serviceDep
+from .schema.book import  BookCreate, BookRead, BookUpdate
+from .dependencies import serviceDep
 
 @asynccontextmanager
 async def lifespan_handler(app: FastAPI):
-    create_table()
+    await create_table()
     yield
 
 app = FastAPI(lifespan=lifespan_handler)
 
-@app.get('/book', response_model=BookRead)
+@app.get('/book')
 async def get_books(id: int, service: serviceDep):
     return await service.get(id)
 

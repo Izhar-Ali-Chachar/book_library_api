@@ -3,11 +3,11 @@ from fastapi import Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.session import create_session
-from app.service.book import DatabaseServices
+from .database.session import get_session
+from .service.book import DatabaseServices
 
 
-sessionDep = Annotated[AsyncSession, Depends(create_session)]
+sessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 def database_service_dep(session: sessionDep) -> DatabaseServices:
     return DatabaseServices(session)
