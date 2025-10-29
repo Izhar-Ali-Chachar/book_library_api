@@ -10,10 +10,10 @@ class Book(SQLModel, table=True):
     published_date: datetime = Field(default_factory=datetime.now)
 
 class User(SQLModel, table=True):
-    __tablename__="user1"
+    __tablename__="user2"
 
     id: int = Field(primary_key=True)
 
-    username: str
+    name: str
     email: EmailStr
     hashed_password: str

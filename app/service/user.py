@@ -1,6 +1,9 @@
+import jwt
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from passlib.context import CryptContext # type: ignore #noqa
+from sqlmodel import select 
 
 pass_ctx = CryptContext(schemes=["argon2"], deprecated="auto")
 
@@ -24,3 +27,26 @@ class UserDatabaseService:
         await self.session.refresh(new_user)
 
         return new_user
+    
+    async def login_user(self, email: EmailStr, password: str) -> str:
+        query = await self.session.execute(
+            select(User).where(User.email == email)
+        )
+        user = query.scalars().first()
+
+        if not user or not pass_ctx.verify(password, user.hashed_password):
+            raise Exception("Invalid credentials")
+        
+        payload = {
+                "id": user.id,
+                "email": user.email,
+            }
+        
+        token = jwt.encode(
+            payload,
+            key="secret",
+            algorithm="HS256",
+        )
+
+        # Here you would normally generate a JWT or similar token
+        return token

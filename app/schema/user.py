@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 
 
 class BaseUser(SQLModel):
-    username: str
+    name: str
     email: EmailStr
 
 class UserCreate(BaseUser):
