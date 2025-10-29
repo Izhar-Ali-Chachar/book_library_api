@@ -5,7 +5,7 @@ from ..database.models import Book
 from ..schema.book import BookCreate, BookUpdate
 
 
-class DatabaseServices:
+class BookDatabaseService:
     def __init__(self, session: AsyncSession):
         self.session = session
 
