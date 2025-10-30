@@ -8,7 +8,7 @@ from ..schema.book import BookCreate, BookRead, BookUpdate
 router = APIRouter(prefix="/books", tags=["books"])
 
 @router.get('/{id}')
-async def get_books(id: int, service: bookServiceDep):
+async def get_books(id: int, _: userDep, service: bookServiceDep):
     return await service.get(id)
 
 @router.post("/")

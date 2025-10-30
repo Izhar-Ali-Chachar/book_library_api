@@ -1,10 +1,16 @@
 from datetime import datetime, timedelta
 import jwt
 
+from uuid import uuid4
+
 def encode_token(data: dict, exp: timedelta) -> str:
 
     token = jwt.encode(
-        {**data, "exp": datetime.now() + timedelta(days=3)},
+        {
+            **data,
+            "jti": uuid4().hex,
+            "exp": datetime.now() + timedelta(days=3)
+        },
         key="secret",
         algorithm="HS256",
     )

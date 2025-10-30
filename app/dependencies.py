@@ -3,6 +3,8 @@ from fastapi import Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .database.redis.redis import is_token_blacklisted
+
 from .database.models import User
 
 from .service.user import UserDatabaseService
@@ -21,10 +23,11 @@ def get_user_service_dep(
 ):
     return UserDatabaseService(session)
 
-def get_access_token(token: Annotated[str, Depends(oauth_scheme)]) -> dict | None:
+async def get_access_token(token: Annotated[str, Depends(oauth_scheme)]) -> dict | None:
     data = decode_token(token)
 
-    if data is None:
+    jti = data.get('jti') if data else None
+    if data is None or jti is None or await is_token_blacklisted(jti):
         raise HTTPException(
             status_code=404,
             detail="Invalid token",

@@ -1,10 +1,13 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
+
 from fastapi.security import OAuth2PasswordRequestForm
+
+from ..database.redis.redis import black_list_token
 
 from ..schema.user import UserCreate, UserRead
 
-from ..dependencies import userServiceDep
+from ..dependencies import get_access_token, userServiceDep
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -24,5 +27,6 @@ async def login_user(
     )
 
 @router.get("/logout")
-async def logout_user():
+async def logout_user(token_data: Annotated[dict, Depends(get_access_token)]):
+    await black_list_token(token_data['jti'])
     return {"message": "User logged out successfully"}
