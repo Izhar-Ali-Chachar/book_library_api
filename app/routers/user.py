@@ -18,8 +18,11 @@ async def login_user(
     request_form: Annotated[OAuth2PasswordRequestForm, Depends()],
     service: userServiceDep,
 ):
-    token = await service.login_user(
+    return await service.login_user(
         email=request_form.username,
         password=request_form.password,
     )
-    return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/logout")
+async def logout_user():
+    return {"message": "User logged out successfully"}
